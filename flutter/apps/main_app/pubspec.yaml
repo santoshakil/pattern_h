@@ -1,0 +1,30 @@
+name: main_app
+description: Pattern H main application
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.24.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  design_system:
+    path: ../../packages/design_system
+  ui_kit:
+    path: ../../packages/ui_kit
+  native_bridge:
+    path: ../../packages/native_bridge
+  platform_bridge:
+    path: ../../packages/platform_bridge
+  proto_models:
+    path: ../../packages/proto_models
+  flutter_riverpod: ^2.6.0
+  go_router: ^14.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

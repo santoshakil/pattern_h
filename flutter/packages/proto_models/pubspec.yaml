@@ -1,0 +1,16 @@
+name: proto_models
+description: Generated Dart protobuf models
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.0
+
+resolution: workspace
+
+dependencies:
+  fixnum: ^1.1.0
+  protobuf: ^5.0.0
+
+dev_dependencies:
+  test: ^1.25.0

@@ -1,0 +1,14 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_expression_function_bodies: true
+    prefer_single_quotes: true
+    avoid_print: true
+    use_colored_box: true
+    use_decorated_box: true
+    sized_box_for_whitespace: true
+    unnecessary_string_interpolations: true
+    prefer_interpolation_to_compose_strings: true

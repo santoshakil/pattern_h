@@ -1,0 +1,41 @@
+name: pattern_h
+
+packages:
+  - packages/**
+  - apps/**
+
+command:
+  bootstrap:
+    hooks:
+      post: melos run generate
+
+scripts:
+  analyze:
+    run: dart analyze --fatal-infos
+
+  test:
+    exec: flutter test
+    packageFilters:
+      dirExists:
+        - test
+
+  generate:
+    run: melos run generate:proto && melos run generate:headers && melos run generate:ffi
+    description: Run all code generation
+
+  generate:proto:
+    run: bash "$MELOS_ROOT_PATH/../scripts/generate_proto.sh"
+    description: Generate protobuf Dart models
+
+  generate:headers:
+    run: cd "$MELOS_ROOT_PATH/../rust" && cargo build -p app_core
+    description: Build app_core to generate cbindgen header
+
+  generate:ffi:
+    exec: dart run ffigen
+    packageFilters:
+      scope:
+        - native_bridge
+
+  clean:
+    exec: flutter clean

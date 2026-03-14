@@ -1,0 +1,15 @@
+[package]
+name = "ffi"
+version.workspace = true
+edition.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+errors = { path = "../errors" }
+dashmap = { workspace = true }
+parking_lot = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+irondash_dart_ffi = { workspace = true }

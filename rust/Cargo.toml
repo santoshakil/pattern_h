@@ -1,0 +1,36 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+async-trait = "0.1"
+serde = { version = "1", features = ["derive"] }
+prost = "0.13"
+rusqlite = { version = "0.32", features = ["bundled"] }
+dashmap = "6"
+parking_lot = "0.12"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1", features = ["v4"] }
+prost-build = "0.13"
+cbindgen = "0.28"
+irondash_dart_ffi = "0.2"
+
+[workspace.lints.rust]
+unsafe_code = "warn"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = true

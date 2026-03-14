@@ -1,0 +1,22 @@
+[package]
+name = "app_core"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[lints]
+workspace = true
+
+[dependencies]
+errors = { path = "../errors" }
+domain = { path = "../domain" }
+proto = { path = "../proto" }
+ffi = { path = "../ffi" }
+prost = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[build-dependencies]
+cbindgen = { workspace = true }

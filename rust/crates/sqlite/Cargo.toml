@@ -1,0 +1,12 @@
+[package]
+name = "sqlite"
+version.workspace = true
+edition.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+errors = { path = "../errors" }
+rusqlite = { workspace = true }
+parking_lot = { workspace = true }

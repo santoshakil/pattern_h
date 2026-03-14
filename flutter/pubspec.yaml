@@ -1,0 +1,16 @@
+name: _pattern_h
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+workspace:
+  - packages/native_bridge
+  - packages/platform_bridge
+  - packages/proto_models
+  - packages/design_system
+  - packages/ui_kit
+  - apps/main_app
+
+dev_dependencies:
+  lints: ^5.0.0

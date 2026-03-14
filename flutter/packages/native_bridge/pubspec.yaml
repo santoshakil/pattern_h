@@ -1,0 +1,33 @@
+name: native_bridge
+description: FFI bridge to Rust core with native asset support
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.0
+
+resolution: workspace
+
+dependencies:
+  ffi: ^2.1.0
+  hooks: ^1.0.0
+  code_assets: ^1.0.0
+  native_toolchain_rust: ^1.0.3
+
+dev_dependencies:
+  ffigen: ^14.0.0
+  test: ^1.25.0
+
+ffigen:
+  name: NativeBindings
+  description: Generated FFI bindings for app_core
+  output: lib/src/generated/bindings.dart
+  headers:
+    entry-points:
+      - ../../../rust/target/app_core.h
+    include-directives:
+      - ../../../rust/target/app_core.h
+  ffi-native:
+    asset-id: 'package:native_bridge/native_bridge.dart'
+  preamble: |
+    // ignore_for_file: type=lint
