@@ -106,3 +106,7 @@ Dart: NativeEventReceiver().events.listen((e) => ...) or .where(id).listen(...)
 - cbindgen: 0.29
 - Dart SDK: ^3.8.0
 - Flutter: >=3.32.0
+- flutter_riverpod: ^3.3.0
+- go_router: ^17.0.0
+- protobuf: ^6.0.0
+- ffigen: ^20.0.0

@@ -25,7 +25,7 @@ linter:
     require_trailing_commas: true
     use_build_context_synchronously: true
     avoid_unnecessary_containers: true
-    always_use_package_imports: true
+    prefer_relative_imports: true
     unawaited_futures: true
     cancel_subscriptions: true
     close_sinks: true

@@ -10,7 +10,7 @@ resolution: workspace
 
 dependencies:
   fixnum: ^1.1.0
-  protobuf: ^5.0.0
+  protobuf: ^6.0.0
 
 dev_dependencies:
   test: ^1.25.0

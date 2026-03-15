@@ -173,11 +173,11 @@ just scaffold ... # Create new project (wraps pattern-h CLI)
 ### Flutter/Dart
 | Package | Version | Purpose |
 |---------|---------|---------|
-| flutter_riverpod | ^2.6.0 | State management |
-| go_router | ^14.0.0 | Routing |
-| protobuf | ^5.0.0 | Protobuf runtime |
+| flutter_riverpod | ^3.3.0 | State management |
+| go_router | ^17.0.0 | Routing |
+| protobuf | ^6.0.0 | Protobuf runtime |
 | native_toolchain_rust | ^1.0.3 | Native asset build hook |
-| ffigen | ^14.0.0 | @Native binding generation |
+| ffigen | ^20.0.0 | @Native binding generation |
 
 ### Toolchain
 - Rust 1.86.0 (pinned, with Android/iOS/macOS cross-compilation targets)

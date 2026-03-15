@@ -8,7 +8,7 @@ void main() {
   group('AppScaffold', () {
     testWidgets('renders title in AppBar', (t) async {
       await t.pumpWidget(
-        _wrap(AppScaffold(title: 'Home', body: const SizedBox())),
+        _wrap(const AppScaffold(title: 'Home', body: SizedBox())),
       );
       expect(find.text('Home'), findsOneWidget);
       expect(find.byType(AppBar), findsOneWidget);
@@ -16,7 +16,7 @@ void main() {
 
     testWidgets('renders body content', (t) async {
       await t.pumpWidget(
-        _wrap(AppScaffold(title: 'T', body: const Text('content'))),
+        _wrap(const AppScaffold(title: 'T', body: Text('content'))),
       );
       expect(find.text('content'), findsOneWidget);
     });
@@ -39,7 +39,7 @@ void main() {
 
     testWidgets('no FAB when not provided', (t) async {
       await t.pumpWidget(
-        _wrap(AppScaffold(title: 'T', body: const SizedBox())),
+        _wrap(const AppScaffold(title: 'T', body: SizedBox())),
       );
       expect(find.byType(FloatingActionButton), findsNothing);
     });
@@ -61,14 +61,14 @@ void main() {
 
     testWidgets('no actions when not provided', (t) async {
       await t.pumpWidget(
-        _wrap(AppScaffold(title: 'T', body: const SizedBox())),
+        _wrap(const AppScaffold(title: 'T', body: SizedBox())),
       );
       expect(find.byType(IconButton), findsNothing);
     });
 
     testWidgets('wraps body in SafeArea', (t) async {
       await t.pumpWidget(
-        _wrap(AppScaffold(title: 'T', body: const Text('safe'))),
+        _wrap(const AppScaffold(title: 'T', body: Text('safe'))),
       );
       expect(find.byType(SafeArea), findsWidgets);
       final scaffold = t.widget<Scaffold>(find.byType(Scaffold));

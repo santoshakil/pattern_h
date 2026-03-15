@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -58,9 +61,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Pattern H'), findsOneWidget);
-    expect(find.text('Hexagonal Architecture'), findsOneWidget);
-    expect(find.text('Ping Rust Core'), findsOneWidget);
-    expect(find.text('Send Test Event'), findsOneWidget);
+    expect(find.text('Flutter + Rust + Platform Test'), findsOneWidget);
   });
 
   testWidgets('app uses correct theme', (tester) async {

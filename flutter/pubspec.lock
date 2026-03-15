@@ -113,6 +113,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.7"
+  dart_style:
+    dependency: transitive
+    description:
+      name: dart_style
+      sha256: a9c30492da18ff84efe2422ba2d319a89942d93e58eb0b73d32abe822ef54b7b
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.3"
   fake_async:
     dependency: transitive
     description:
@@ -133,10 +141,10 @@ packages:
     dependency: transitive
     description:
       name: ffigen
-      sha256: "585a852fefda1b796322b45b433e602daae58f92dd8d918b2497db02f1cabf7c"
+      sha256: b7803707faeec4ce3c1b0c2274906504b796e3b70ad573577e72333bd1c9b3ba
       url: "https://pub.dev"
     source: hosted
-    version: "14.0.1"
+    version: "20.1.1"
   file:
     dependency: transitive
     description:
@@ -162,10 +170,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_riverpod
-      sha256: "9532ee6db4a943a1ed8383072a2e3eeda041db5657cdf6d2acecf3c21ecbe7e1"
+      sha256: "4e166be88e1dbbaa34a280bdb744aeae73b7ef25fdf8db7a3bb776760a3648e2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.6.1"
+    version: "3.3.1"
   flutter_test:
     dependency: transitive
     description: flutter
@@ -196,10 +204,10 @@ packages:
     dependency: transitive
     description:
       name: go_router
-      sha256: f02fd7d2a4dc512fec615529824fdd217fecb3a3d3de68360293a551f21634b3
+      sha256: "7974313e217a7771557add6ff2238acb63f635317c35fa590d348fb238f00896"
       url: "https://pub.dev"
     source: hosted
-    version: "14.8.1"
+    version: "17.1.0"
   hooks:
     dependency: transitive
     description:
@@ -356,10 +364,10 @@ packages:
     dependency: transitive
     description:
       name: protobuf
-      sha256: "2fcc8a202ca7ec17dab7c97d6b6d91cf03aa07fe6f65f8afbb6dfa52cc5bd902"
+      sha256: "75ec242d22e950bdcc79ee38dd520ce4ee0bc491d7fadc4ea47694604d22bf06"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "6.0.0"
   pub_semver:
     dependency: transitive
     description:
@@ -380,10 +388,10 @@ packages:
     dependency: transitive
     description:
       name: riverpod
-      sha256: "59062512288d3056b2321804332a13ffdd1bf16df70dcc8e506e411280a72959"
+      sha256: "8c22216be8ad3ef2b44af3a329693558c98eca7b8bd4ef495c92db0bba279f83"
       url: "https://pub.dev"
     source: hosted
-    version: "2.6.1"
+    version: "3.2.1"
   shelf:
     dependency: transitive
     description:
@@ -599,4 +607,4 @@ packages:
     version: "2.2.4"
 sdks:
   dart: ">=3.10.0 <4.0.0"
-  flutter: ">=3.32.0"
+  flutter: ">=3.35.0"

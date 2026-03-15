@@ -12,9 +12,3 @@ final eventReceiverProvider = Provider<NativeEventReceiver>((ref) {
   ref.onDispose(receiver.dispose);
   return receiver;
 });
-
-final pingResultProvider = StateProvider<String?>((ref) => null);
-
-final isLoadingProvider = StateProvider<bool>((ref) => false);
-
-final lastEventProvider = StateProvider<String?>((ref) => null);

@@ -33,6 +33,10 @@ generate:
     ./scripts/generate_proto.sh
     cd rust && cargo build -p app_core
 
+# Install the pattern-h CLI globally
+install-cli:
+    cargo install --path tools/cli
+
 # Clean all build artifacts
 clean:
     cd rust && cargo clean
