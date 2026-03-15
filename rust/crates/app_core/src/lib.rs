@@ -76,7 +76,6 @@ pub extern "C" fn app_disconnect_dart_port() {
     EVENT_PORT.disconnect();
 }
 
-#[cfg(debug_assertions)]
 #[unsafe(no_mangle)]
 pub extern "C" fn app_send_test_event() {
     EVENT_PORT.send_event(1, vec!["test event from Rust".into()]);

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:native_bridge/native_bridge.dart';
@@ -22,7 +24,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _runTests();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _runTests());
   }
 
   @override
@@ -31,40 +33,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _runTests() async {
-    _addLog('Starting tests...');
+  void _runTests() {
+    _addLog('=== FFI Test Start ===');
 
     try {
       final ffi = ref.read(ffiClientProvider);
-      _addLog('FFI init: OK');
+      _addLog('PASS: FFI init OK');
       _addLog('Version: ${ffi.version}');
+    } catch (e) {
+      _addLog('FAIL: FFI init - $e');
+      return;
+    }
 
+    try {
+      final ffi = ref.read(ffiClientProvider);
       final req = PingRequest(message: 'hello from Flutter');
       final resBytes = ffi.ping(Uint8List.fromList(req.writeToBuffer()));
       final res = PingResponse.fromBuffer(resBytes);
-      _addLog('Ping: ${res.message}');
+      _addLog('PASS: Ping - ${res.message}');
       if (res.hasTimestamp()) {
-        _addLog('Timestamp: ${res.timestamp.seconds}');
+        _addLog('  Timestamp: ${res.timestamp.seconds}');
       }
-    } on FfiException catch (e) {
-      _addLog('FFI Error: $e');
     } catch (e) {
-      _addLog('Error: $e');
+      _addLog('FAIL: Ping - $e');
     }
 
     try {
       final receiver = ref.read(eventReceiverProvider);
       _eventSub = receiver.events.listen((event) {
-        _addLog('Event received: $event');
+        _addLog('PASS: Event received - $event');
       });
       ref.read(ffiClientProvider).sendTestEvent();
-      _addLog('Test event sent');
+      _addLog('PASS: Test event sent');
     } catch (e) {
-      _addLog('Event error: $e');
+      _addLog('FAIL: Event - $e');
     }
+
+    _addLog('=== FFI Test End ===');
   }
 
   void _addLog(String msg) {
+    debugPrint('PATTERN_H: $msg');
     setState(() => _log.add(msg));
   }
 
@@ -88,10 +97,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Expanded(
               child: ListView.builder(
                 itemCount: _log.length,
-                itemBuilder: (_, i) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Text(_log[i], style: text.bodyMedium),
-                ),
+                itemBuilder: (_, i) {
+                  final line = _log[i];
+                  final color = line.startsWith('PASS')
+                      ? Colors.green
+                      : line.startsWith('FAIL')
+                          ? Colors.red
+                          : colors.onSurface;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Text(line,
+                        style: text.bodyMedium?.copyWith(color: color)),
+                  );
+                },
               ),
             ),
           ],
