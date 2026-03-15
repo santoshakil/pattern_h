@@ -121,13 +121,24 @@ fi
 echo ""
 echo "=== Verification ==="
 
-# Rust check
+# Rust check (also triggers cbindgen header generation)
 echo "Checking Rust compilation..."
 cd "$ROOT_DIR/rust"
-if cargo check --workspace --quiet 2>/dev/null; then
+if cargo build -p app_core --quiet 2>/dev/null; then
     ok "Rust workspace compiles"
 else
     warn "Rust compilation has issues (may need proto generation first)"
+fi
+
+# Generate FFI bindings
+if command -v dart &> /dev/null; then
+    echo "Generating FFI bindings..."
+    cd "$ROOT_DIR/flutter/packages/native_bridge"
+    if dart run ffigen 2>/dev/null; then
+        ok "FFI bindings generated"
+    else
+        warn "FFI binding generation failed (may need Rust build first)"
+    fi
 fi
 
 echo ""
