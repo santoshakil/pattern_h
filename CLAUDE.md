@@ -7,23 +7,25 @@
 - Protobuf: single source of truth for cross-language data
 - FFI: ByteBuffer zero-copy via Flutter native assets
 - Events: Rust→Dart push via irondash_dart_ffi (NativeEventPort + ReceivePort)
+- Method Channels: typed PlatformChannel toolkit with ChannelRegistry pattern
 - Typed DomainEvent enum (EntityCreated/Updated/Deleted/Custom)
 - SQLite migration system (versioned, idempotent)
 
 ## Directory Structure
 - protos/ — protobuf definitions (single source of truth)
-- rust/crates/errors — error type hierarchy
+- rust/crates/errors — error type hierarchy (AppError, FfiError, DomainError, StorageError)
 - rust/crates/domain — entities, value objects, ports (traits), services, events
-- rust/crates/proto — generated protobuf Rust types
-- rust/crates/ffi — FFI toolkit (ByteBuffer, runtime, safety, validation, dart_port events)
-- rust/crates/sqlite — SQLite storage adapter + migration system
-- rust/crates/app_core — composition root + FFI exports (cdylib)
+- rust/crates/proto — generated protobuf Rust types (prost build.rs)
+- rust/crates/ffi — FFI toolkit (ByteBuffer, AppRuntime, HandleRegistry, NativeEventPort, catch_ffi)
+- rust/crates/sqlite — SQLite storage adapter + versioned migration system
+- rust/crates/app_core — composition root + FFI exports (cdylib, cbindgen header)
 - flutter/packages/native_bridge — Dart FFI client + NativeEventReceiver + native asset build hook
-- flutter/packages/platform_bridge — typed method channel toolkit for platform APIs
+- flutter/packages/platform_bridge — typed method channel toolkit (PlatformChannel + error hierarchy)
 - flutter/packages/proto_models — generated Dart protobuf classes
-- flutter/packages/design_system — theme, colors, typography (Material 3)
-- flutter/packages/ui_kit — reusable themed widgets
+- flutter/packages/design_system — Material 3 theme, colors, typography (seed color based)
+- flutter/packages/ui_kit — reusable themed widgets (AppButton, AppScaffold)
 - flutter/apps/main_app — the Flutter application
+- templates/platform/ — platform channel templates for Android/iOS/macOS/Windows/Linux
 - tools/cli/ — Rust CLI to create new projects (embeds template at compile time)
 
 ## Dependency Flow
@@ -37,32 +39,43 @@ Rust:
 Flutter:
   main_app → design_system, ui_kit, native_bridge, platform_bridge, proto_models
   ui_kit → flutter SDK only (uses Theme.of(context), NO design_system dep)
-  native_bridge → ffi, hooks, code_assets, native_toolchain_rust (ffigen for @Native bindings)
+  native_bridge → ffi, hooks, code_assets, native_toolchain_rust
   platform_bridge → flutter SDK only
 
-## Build Commands
-cargo check --workspace
-cargo clippy --workspace -- -D warnings
-dart analyze --fatal-infos
-./scripts/check.sh
-./scripts/generate_proto.sh
-./scripts/setup.sh (first-time setup)
+## Commands
+just setup — first-time setup (checks tools, installs deps, generates code)
+just check — full pipeline: fmt + lint + test
+just fmt — format Rust + Dart
+just lint — clippy + dart analyze
+just test — cargo test + flutter test
+just generate — regenerate proto + cbindgen header
+just scaffold <name> [--org] [--seed-color] [-o] — create new project
+just install-cli — install pattern-h command globally
+just clean — clean all build artifacts
 
-## Creating a New Project from Skeleton
-Install: cargo install --path tools/cli (or: cargo install --git <repo-url> --path tools/cli)
-Usage: pattern-h my_app_name --org com.mycompany --seed-color FF6B35 -o ~/projects
-- or: just scaffold my_app_name --org com.mycompany
-- Embeds entire template at compile time, replaces all references, inits git
+## Creating a New Project
+Install: cargo install --path tools/cli
+Usage: pattern-h my_app --org com.mycompany --seed-color FF6B35 -o ~/projects
+
+What it does:
+1. Extracts skeleton (Rust, Dart, protos, scripts, templates)
+2. Renames: main_app→my_app, app_core→my_app_core, pattern_h→my_app everywhere
+3. Runs flutter create --platforms android,ios,macos,windows,linux
+4. Injects platform channel code (ChannelRegistry + DeviceInfoChannel per platform)
+5. Adds permissions (INTERNET on Android, network.client on macOS)
+6. Updates Xcode projects to include Swift files
+7. Patches CMakeLists for Windows/Linux channel sources
+8. Initializes git with initial commit
 
 ## Adding a New Domain Feature
 1. Define messages in protos/services/*.proto
-2. Run ./scripts/generate_proto.sh (generates Dart + Rust proto types)
+2. Run ./scripts/generate_proto.sh
 3. Add domain service trait in rust/crates/domain/src/services/
 4. Implement service in domain (pure logic, no infra deps)
-5. Add FFI export in rust/crates/app_core/src/ffi_exports.rs (wire service)
-6. Run cargo build -p app_core (regenerates C header via cbindgen)
+5. Add FFI export in rust/crates/app_core/src/ffi_exports.rs
+6. Run cargo build -p app_core (regenerates C header)
 7. Run dart run ffigen in native_bridge (regenerates @Native bindings)
-8. Add typed method in FfiClient (encode proto → callNative → decode proto)
+8. Add typed method in FfiClient
 9. Call from Flutter UI via provider
 
 ## Adding a New Domain Entity with Storage
@@ -71,37 +84,23 @@ Usage: pattern-h my_app_name --org com.mycompany --seed-color FF6B35 -o ~/projec
 3. Define port trait in rust/crates/domain/src/ports/
 4. Add migration in sqlite crate (Migration { version, sql })
 5. Call run_migrations() from app_core init
-6. Implement adapter in rust/crates/sqlite/ (or new infra crate)
+6. Implement adapter in rust/crates/sqlite/
 7. Follow steps 3-9 from "Adding a New Domain Feature"
 
-## Adding a New Infrastructure Adapter
-1. Create rust/crates/infra_name/ with Cargo.toml
-2. Depend on errors crate (add domain when implementing port traits)
-3. Implement the port trait from domain/src/ports/
-4. Wire in app_core/src/lib.rs
+## Adding a New Platform Channel
+Dart: create lib/platform/nfc.dart (typed wrapper using PlatformChannel)
+Android: create channels/NfcChannel.kt, add to ChannelRegistry.registerAll()
+iOS: create NfcChannel.swift, add to ChannelRegistry.registerAll()
+macOS: create NfcChannel.swift, add to ChannelRegistry.registerAll()
+Windows: create nfc_channel.h/.cpp, add to RegisterChannels(), update CMakeLists
+Linux: create nfc_channel.h/.cc, add to register_channels(), update CMakeLists
 
-## Rust→Dart Push Events (irondash)
-Rust side:
-1. `ffi::define_event_port!(EVENT_PORT)` in app_core (already done)
-2. Use `EVENT_PORT.send_event(id, vec![DartValue::...])` from any Rust code
-3. FFI exports: `app_init_dart_api`, `app_set_dart_port`, `app_disconnect_dart_port`
-
-Dart side:
-1. `final receiver = NativeEventReceiver()`
-2. `receiver.events.listen((e) => ...)` — auto-connects on first listen
-3. `receiver.where(42).listen(...)` — filter by event ID
-4. `receiver.dispose()` on shutdown
-5. Auto-cleanup when all listeners detach
-
-## Adding a Platform Feature (Method Channels)
-1. Create a PlatformChannel: `final nfc = PlatformChannel('com.pattern_h/nfc')`
-2. Call platform methods: `await nfc.call<Map>('readTag', {'timeout': 5000})`
-3. Listen to events: `nfc.events('tags').listen((tag) { ... })`
-4. Implement platform side in Kotlin/Swift using matching channel names
-5. Error codes: UNAVAILABLE, PERMISSION_DENIED, INVALID_ARGUMENT, NOT_FOUND, ALREADY_IN_USE, TIMEOUT, CANCELLED
+## Rust→Dart Push Events
+Rust: EVENT_PORT.send_event(id, vec![DartValue::...])
+Dart: NativeEventReceiver().events.listen((e) => ...) or .where(id).listen(...)
 
 ## Pinned Versions
-- Rust toolchain: 1.86.0
+- Rust: 1.86.0 (with cross-compilation targets for Android/iOS/macOS)
 - prost/prost-build: 0.14
 - rusqlite: 0.38 (bundled)
 - cbindgen: 0.29
