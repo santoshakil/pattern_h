@@ -17,9 +17,14 @@ class NativeEvent {
 class NativeEventReceiver {
   ReceivePort? _receivePort;
   StreamController<NativeEvent>? _controller;
+  StreamSubscription<dynamic>? _portSub;
   static bool _dartApiInitialized = false;
+  bool _disposed = false;
 
   Stream<NativeEvent> get events {
+    if (_disposed) {
+      throw StateError('NativeEventReceiver already disposed');
+    }
     _ensureStarted();
     return _controller!.stream;
   }
@@ -39,7 +44,7 @@ class NativeEventReceiver {
     _receivePort = ReceivePort();
     app_set_dart_port(_receivePort!.sendPort.nativePort);
 
-    _receivePort!.listen((message) {
+    _portSub = _receivePort!.listen((message) {
       if (message is List && message.isNotEmpty) {
         var id = message[0] as int;
         var data = message.sublist(1);
@@ -49,21 +54,26 @@ class NativeEventReceiver {
   }
 
   void _onLastListenerGone() {
+    _teardown();
+  }
+
+  void _teardown() {
     app_disconnect_dart_port();
+    _portSub?.cancel();
+    _portSub = null;
     _receivePort?.close();
     _receivePort = null;
-    _controller?.close();
+    final ctrl = _controller;
     _controller = null;
+    ctrl?.close();
   }
 
   Stream<NativeEvent> where(int eventId) =>
       events.where((e) => e.id == eventId);
 
   void dispose() {
-    app_disconnect_dart_port();
-    _receivePort?.close();
-    _receivePort = null;
-    _controller?.close();
-    _controller = null;
+    if (_disposed) return;
+    _disposed = true;
+    _teardown();
   }
 }

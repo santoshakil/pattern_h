@@ -12,9 +12,3 @@ message PingResponse {
   string message = 1;
   common.Timestamp timestamp = 2;
 }
-
-message VersionRequest {}
-
-message VersionResponse {
-  string version = 1;
-}

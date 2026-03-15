@@ -12,14 +12,26 @@ fn main() {
     println!("cargo:rerun-if-changed=../../cbindgen.toml");
     println!("cargo:rerun-if-changed=../ffi/src/");
     println!("cargo:rerun-if-changed=../errors/src/");
+    println!("cargo:rerun-if-changed=../domain/src/");
 
-    let config = cbindgen::Config::from_file(&config_path).unwrap_or_default();
+    let config = match cbindgen::Config::from_file(&config_path) {
+        Ok(cfg) => cfg,
+        Err(e) => {
+            eprintln!("cargo:warning=cbindgen config error: {e}, using defaults");
+            cbindgen::Config::default()
+        }
+    };
 
-    if let Ok(bindings) = cbindgen::Builder::new()
+    match cbindgen::Builder::new()
         .with_crate(&crate_dir)
         .with_config(config)
         .generate()
     {
-        bindings.write_to_file(&output_path);
+        Ok(bindings) => {
+            bindings.write_to_file(&output_path);
+        }
+        Err(e) => {
+            eprintln!("cargo:warning=cbindgen generation failed: {e}");
+        }
     }
 }

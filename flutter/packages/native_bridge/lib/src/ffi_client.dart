@@ -21,7 +21,12 @@ class FfiClient {
   Uint8List ping(Uint8List requestBytes) =>
       callNative(app_ping, requestBytes);
 
-  void sendTestEvent() => app_send_test_event();
+  void sendTestEvent() {
+    assert(() {
+      app_send_test_event();
+      return true;
+    }());
+  }
 
   Uint8List callNative(ProtoFfiFn fn, Uint8List requestBytes) {
     final ptr = _allocateAndCopy(requestBytes);

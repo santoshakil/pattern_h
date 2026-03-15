@@ -36,5 +36,32 @@ class AppTheme {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           filled: true,
         ),
+        snackBarTheme: SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        dialogTheme: DialogThemeData(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          showDragHandle: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+        ),
+        navigationBarTheme: NavigationBarThemeData(
+          indicatorShape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        tabBarTheme: TabBarThemeData(
+          indicatorSize: TabBarIndicatorSize.tab,
+          dividerColor: colorScheme.outlineVariant,
+        ),
+        dividerTheme: DividerThemeData(
+          color: colorScheme.outlineVariant,
+          space: 1,
+        ),
       );
 }

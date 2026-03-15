@@ -11,16 +11,16 @@ license = "MIT"
 tokio = { version = "1", features = ["full"] }
 async-trait = "0.1"
 serde = { version = "1", features = ["derive"] }
-prost = "0.13"
-rusqlite = { version = "0.32", features = ["bundled"] }
+prost = "0.14"
+rusqlite = { version = "0.38", features = ["bundled"] }
 dashmap = "6"
 parking_lot = "0.12"
 thiserror = "2"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 uuid = { version = "1", features = ["v4"] }
-prost-build = "0.13"
-cbindgen = "0.28"
+prost-build = "0.14"
+cbindgen = "0.29"
 irondash_dart_ffi = "0.2"
 
 [workspace.lints.rust]

@@ -2,7 +2,7 @@ name: _pattern_h
 publish_to: none
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.8.0
 
 workspace:
   - packages/native_bridge
@@ -13,4 +13,4 @@ workspace:
   - apps/main_app
 
 dev_dependencies:
-  lints: ^5.0.0
+  lints: ^6.0.0

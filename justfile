@@ -2,6 +2,10 @@ set shell := ["bash", "-cu"]
 
 default: check
 
+# First-time setup: install deps, generate code, verify
+setup:
+    ./scripts/setup.sh
+
 # Full check pipeline
 check: fmt lint test
 
@@ -28,6 +32,10 @@ rust-check:
 generate:
     ./scripts/generate_proto.sh
     cd rust && cargo build -p app_core
+
+# Create a new project from this skeleton
+scaffold name:
+    cd tools/scaffold && dart run bin/scaffold.dart {{name}}
 
 # Clean all build artifacts
 clean:

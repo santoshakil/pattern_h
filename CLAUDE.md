@@ -7,6 +7,8 @@
 - Protobuf: single source of truth for cross-language data
 - FFI: ByteBuffer zero-copy via Flutter native assets
 - Events: Rust→Dart push via irondash_dart_ffi (NativeEventPort + ReceivePort)
+- Typed DomainEvent enum (EntityCreated/Updated/Deleted/Custom)
+- SQLite migration system (versioned, idempotent)
 
 ## Directory Structure
 - protos/ — protobuf definitions (single source of truth)
@@ -14,19 +16,20 @@
 - rust/crates/domain — entities, value objects, ports (traits), services, events
 - rust/crates/proto — generated protobuf Rust types
 - rust/crates/ffi — FFI toolkit (ByteBuffer, runtime, safety, validation, dart_port events)
-- rust/crates/sqlite — SQLite storage adapter
+- rust/crates/sqlite — SQLite storage adapter + migration system
 - rust/crates/app_core — composition root + FFI exports (cdylib)
 - flutter/packages/native_bridge — Dart FFI client + NativeEventReceiver + native asset build hook
 - flutter/packages/platform_bridge — typed method channel toolkit for platform APIs
 - flutter/packages/proto_models — generated Dart protobuf classes
-- flutter/packages/design_system — theme, colors, typography
+- flutter/packages/design_system — theme, colors, typography (Material 3)
 - flutter/packages/ui_kit — reusable themed widgets
 - flutter/apps/main_app — the Flutter application
+- tools/scaffold/ — Dart CLI to create new projects from this skeleton
 
 ## Dependency Flow
 Rust:
-  app_core → errors, ffi, proto, domain (composition root)
-  sqlite → errors
+  app_core → errors, ffi, proto, domain, sqlite (composition root)
+  sqlite → errors, tracing
   domain → errors (defines port traits + services)
   ffi → errors (FFI infrastructure)
   proto → prost (generated types)
@@ -43,6 +46,12 @@ cargo clippy --workspace -- -D warnings
 dart analyze --fatal-infos
 ./scripts/check.sh
 ./scripts/generate_proto.sh
+./scripts/setup.sh (first-time setup)
+
+## Creating a New Project from Skeleton
+just scaffold my_app_name
+- or: cd tools/scaffold && dart run bin/scaffold.dart my_app_name --org com.mycompany
+- Replaces all pattern_h references, updates seed color, inits git
 
 ## Adding a New Domain Feature
 1. Define messages in protos/services/*.proto
@@ -59,8 +68,10 @@ dart analyze --fatal-infos
 1. Define messages in protos/
 2. Add entity in rust/crates/domain/src/entities/
 3. Define port trait in rust/crates/domain/src/ports/
-4. Implement adapter in rust/crates/sqlite/ (or new infra crate)
-5. Follow steps 3-9 from "Adding a New Domain Feature"
+4. Add migration in sqlite crate (Migration { version, sql })
+5. Call run_migrations() from app_core init
+6. Implement adapter in rust/crates/sqlite/ (or new infra crate)
+7. Follow steps 3-9 from "Adding a New Domain Feature"
 
 ## Adding a New Infrastructure Adapter
 1. Create rust/crates/infra_name/ with Cargo.toml
@@ -76,7 +87,7 @@ Rust side:
 
 Dart side:
 1. `final receiver = NativeEventReceiver()`
-2. `receiver.events.listen((e) => print(e.id))` — auto-connects on first listen
+2. `receiver.events.listen((e) => ...)` — auto-connects on first listen
 3. `receiver.where(42).listen(...)` — filter by event ID
 4. `receiver.dispose()` on shutdown
 5. Auto-cleanup when all listeners detach
@@ -87,3 +98,11 @@ Dart side:
 3. Listen to events: `nfc.events('tags').listen((tag) { ... })`
 4. Implement platform side in Kotlin/Swift using matching channel names
 5. Error codes: UNAVAILABLE, PERMISSION_DENIED, INVALID_ARGUMENT, NOT_FOUND, ALREADY_IN_USE, TIMEOUT, CANCELLED
+
+## Pinned Versions
+- Rust toolchain: 1.86.0
+- prost/prost-build: 0.14
+- rusqlite: 0.38 (bundled)
+- cbindgen: 0.29
+- Dart SDK: ^3.8.0
+- Flutter: >=3.32.0

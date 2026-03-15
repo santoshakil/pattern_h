@@ -94,3 +94,103 @@ pub fn free_buffer(buf: ByteBuffer) {
 pub fn free_result(result: FfiResult) {
     free_buffer(result.data);
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn empty_buffer_has_null_ptr_and_zero_len() {
+        let buf = ByteBuffer::empty();
+        assert!(buf.ptr.is_null());
+        assert_eq!(buf.len, 0);
+        assert_eq!(buf.capacity, 0);
+    }
+
+    #[test]
+    fn from_vec_preserves_data() {
+        let data = vec![1u8, 2, 3, 4, 5];
+        let buf = ByteBuffer::from_vec(data.clone());
+        assert!(!buf.ptr.is_null());
+        assert_eq!(buf.len, 5);
+        let recovered = unsafe { buf.into_vec() };
+        assert_eq!(recovered, data);
+    }
+
+    #[test]
+    fn from_vec_empty_vec() {
+        let buf = ByteBuffer::from_vec(Vec::new());
+        assert_eq!(buf.len, 0);
+        let recovered = unsafe { buf.into_vec() };
+        assert!(recovered.is_empty());
+    }
+
+    #[test]
+    fn as_slice_on_empty() {
+        let buf = ByteBuffer::empty();
+        let s = unsafe { buf.as_slice() };
+        assert!(s.is_empty());
+    }
+
+    #[test]
+    fn as_slice_on_data() {
+        let data = vec![10u8, 20, 30];
+        let buf = ByteBuffer::from_vec(data.clone());
+        let s = unsafe { buf.as_slice() };
+        assert_eq!(s, &[10, 20, 30]);
+        unsafe { drop(buf.into_vec()) };
+    }
+
+    #[test]
+    fn ffi_result_ok() {
+        let data = vec![9u8, 8, 7];
+        let r = FfiResult::ok(data);
+        assert!(r.success);
+        assert_eq!(r.error_code, 0);
+        assert_eq!(r.data.len, 3);
+        free_result(r);
+    }
+
+    #[test]
+    fn ffi_result_ok_empty() {
+        let r = FfiResult::ok_empty();
+        assert!(r.success);
+        assert_eq!(r.error_code, 0);
+        assert!(r.data.ptr.is_null());
+        assert_eq!(r.data.len, 0);
+    }
+
+    #[test]
+    fn ffi_result_err() {
+        let r = FfiResult::err(42, "something broke");
+        assert!(!r.success);
+        assert_eq!(r.error_code, 42);
+        let msg = unsafe { r.data.as_slice() };
+        assert_eq!(msg, b"something broke");
+        free_result(r);
+    }
+
+    #[test]
+    fn free_buffer_empty_no_panic() {
+        let buf = ByteBuffer::empty();
+        free_buffer(buf);
+    }
+
+    #[test]
+    fn free_buffer_with_data() {
+        let buf = ByteBuffer::from_vec(vec![1, 2, 3]);
+        free_buffer(buf);
+    }
+
+    #[test]
+    fn free_result_frees_correctly() {
+        let r = FfiResult::ok(vec![100; 64]);
+        free_result(r);
+    }
+
+    #[test]
+    fn free_result_err_frees() {
+        let r = FfiResult::err(1, "err msg");
+        free_result(r);
+    }
+}

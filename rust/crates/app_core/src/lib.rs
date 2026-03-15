@@ -35,9 +35,12 @@ pub extern "C" fn app_init() -> ffi::FfiResult {
             use tracing_subscriber::EnvFilter;
             let filter =
                 EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
-            let _ = tracing_subscriber::fmt().with_env_filter(filter).try_init();
+            if let Err(e) = tracing_subscriber::fmt().with_env_filter(filter).try_init() {
+                eprintln!("tracing init failed: {e}");
+            }
         }
         RUNTIME.init()?;
+        tracing::info!("app initialized");
         Ok(Vec::new())
     })
 }
@@ -46,6 +49,7 @@ pub extern "C" fn app_init() -> ffi::FfiResult {
 pub extern "C" fn app_shutdown() -> ffi::FfiResult {
     ffi::catch_ffi(|| {
         RUNTIME.shutdown()?;
+        tracing::info!("app shut down");
         Ok(Vec::new())
     })
 }
@@ -72,6 +76,7 @@ pub extern "C" fn app_disconnect_dart_port() {
     EVENT_PORT.disconnect();
 }
 
+#[cfg(debug_assertions)]
 #[unsafe(no_mangle)]
 pub extern "C" fn app_send_test_event() {
     EVENT_PORT.send_event(1, vec!["test event from Rust".into()]);

@@ -1,6 +1,12 @@
+use crate::events::DomainEvent;
 use errors::DomainError;
-use std::any::Any;
 
 pub trait EventBus: Send + Sync {
-    fn publish(&self, event: Box<dyn Any + Send>) -> Result<(), DomainError>;
+    fn publish(&self, event: DomainEvent) -> Result<(), DomainError>;
+    fn publish_all(&self, events: Vec<DomainEvent>) -> Result<(), DomainError> {
+        for event in events {
+            self.publish(event)?;
+        }
+        Ok(())
+    }
 }
