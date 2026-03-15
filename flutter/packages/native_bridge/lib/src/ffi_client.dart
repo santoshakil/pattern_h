@@ -18,8 +18,7 @@ class FfiClient {
 
   int get version => app_version();
 
-  Uint8List ping(Uint8List requestBytes) =>
-      callNative(app_ping, requestBytes);
+  Uint8List ping(Uint8List requestBytes) => callNative(app_ping, requestBytes);
 
   void sendTestEvent() {
     assert(() {

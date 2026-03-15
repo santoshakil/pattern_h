@@ -1,0 +1,9 @@
+[package]
+name = "pattern-h"
+version = "0.1.0"
+edition = "2021"
+description = "Create Flutter+Rust hexagonal architecture projects from the Pattern H skeleton"
+license = "MIT"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }

@@ -24,7 +24,7 @@
 - flutter/packages/design_system — theme, colors, typography (Material 3)
 - flutter/packages/ui_kit — reusable themed widgets
 - flutter/apps/main_app — the Flutter application
-- tools/scaffold/ — Dart CLI to create new projects from this skeleton
+- tools/cli/ — Rust CLI to create new projects (embeds template at compile time)
 
 ## Dependency Flow
 Rust:
@@ -49,9 +49,10 @@ dart analyze --fatal-infos
 ./scripts/setup.sh (first-time setup)
 
 ## Creating a New Project from Skeleton
-just scaffold my_app_name
-- or: cd tools/scaffold && dart run bin/scaffold.dart my_app_name --org com.mycompany
-- Replaces all pattern_h references, updates seed color, inits git
+Install: cargo install --path tools/cli (or: cargo install --git <repo-url> --path tools/cli)
+Usage: pattern-h my_app_name --org com.mycompany --seed-color FF6B35 -o ~/projects
+- or: just scaffold my_app_name --org com.mycompany
+- Embeds entire template at compile time, replaces all references, inits git
 
 ## Adding a New Domain Feature
 1. Define messages in protos/services/*.proto

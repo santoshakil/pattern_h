@@ -16,9 +16,7 @@ void main() {
 
     testWidgets('renders body content', (t) async {
       await t.pumpWidget(
-        _wrap(
-          AppScaffold(title: 'T', body: const Text('content')),
-        ),
+        _wrap(AppScaffold(title: 'T', body: const Text('content'))),
       );
       expect(find.text('content'), findsOneWidget);
     });
@@ -53,10 +51,7 @@ void main() {
             title: 'T',
             body: const SizedBox(),
             actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.settings),
-              ),
+              IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
             ],
           ),
         ),

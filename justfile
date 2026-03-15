@@ -34,8 +34,12 @@ generate:
     cd rust && cargo build -p app_core
 
 # Create a new project from this skeleton
-scaffold name:
-    cd tools/scaffold && dart run bin/scaffold.dart {{name}}
+scaffold *args:
+    cargo run --manifest-path tools/cli/Cargo.toml -- {{args}}
+
+# Install the scaffold CLI globally
+install-cli:
+    cargo install --path tools/cli
 
 # Clean all build artifacts
 clean:

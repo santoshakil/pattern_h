@@ -5,20 +5,20 @@ sealed class FfiException implements Exception {
   const FfiException(this.code, this.message);
 
   factory FfiException.fromCode(int code, String message) => switch (code) {
-        -1 => PanicException(message),
-        1 => NullPointerException(message),
-        2 => InvalidHandleException(message),
-        3 => BufferOverflowException(message),
-        4 => InvalidUtf8Exception(message),
-        5 => DecodeException(message),
-        6 => EncodeException(message),
-        7 => NotInitializedException(message),
-        8 => AlreadyInitializedException(message),
-        9 => RuntimeInitException(message),
-        100 => DomainException(message),
-        200 => StorageException(message),
-        _ => UnknownFfiException(code, message),
-      };
+    -1 => PanicException(message),
+    1 => NullPointerException(message),
+    2 => InvalidHandleException(message),
+    3 => BufferOverflowException(message),
+    4 => InvalidUtf8Exception(message),
+    5 => DecodeException(message),
+    6 => EncodeException(message),
+    7 => NotInitializedException(message),
+    8 => AlreadyInitializedException(message),
+    9 => RuntimeInitException(message),
+    100 => DomainException(message),
+    200 => StorageException(message),
+    _ => UnknownFfiException(code, message),
+  };
 
   @override
   String toString() => 'FfiException($code): $message';

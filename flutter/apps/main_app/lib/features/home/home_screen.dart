@@ -50,8 +50,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(height: 8),
               Text(
                 'Flutter UI + Rust Core + Protobuf FFI',
-                style:
-                    text.bodyLarge?.copyWith(color: colors.onSurfaceVariant),
+                style: text.bodyLarge?.copyWith(color: colors.onSurfaceVariant),
               ),
               const SizedBox(height: 48),
               AppButton(
@@ -67,17 +66,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Text(
                       pingResult,
-                      style: text.bodyLarge
-                          ?.copyWith(color: colors.onPrimaryContainer),
+                      style: text.bodyLarge?.copyWith(
+                        color: colors.onPrimaryContainer,
+                      ),
                     ),
                   ),
                 ),
               ],
               const SizedBox(height: 24),
-              AppButton(
-                label: 'Send Test Event',
-                onPressed: _onSendEvent,
-              ),
+              AppButton(label: 'Send Test Event', onPressed: _onSendEvent),
               if (lastEvent != null) ...[
                 const SizedBox(height: 16),
                 Card(
@@ -86,8 +83,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Text(
                       lastEvent,
-                      style: text.bodyMedium
-                          ?.copyWith(color: colors.onTertiaryContainer),
+                      style: text.bodyMedium?.copyWith(
+                        color: colors.onTertiaryContainer,
+                      ),
                     ),
                   ),
                 ),
@@ -104,8 +102,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(isLoadingProvider.notifier).state = true;
     try {
       final request = PingRequest(message: 'hello');
-      final responseBytes =
-          ffi.ping(Uint8List.fromList(request.writeToBuffer()));
+      final responseBytes = ffi.ping(
+        Uint8List.fromList(request.writeToBuffer()),
+      );
       final response = PingResponse.fromBuffer(responseBytes);
       var result = response.message;
       if (response.hasTimestamp()) {

@@ -50,8 +50,7 @@ void main() {
       ProviderScope(
         overrides: [
           ffiClientProvider.overrideWithValue(MockFfiClient()),
-          eventReceiverProvider
-              .overrideWithValue(MockEventReceiver()),
+          eventReceiverProvider.overrideWithValue(MockEventReceiver()),
         ],
         child: const App(),
       ),
@@ -69,16 +68,14 @@ void main() {
       ProviderScope(
         overrides: [
           ffiClientProvider.overrideWithValue(MockFfiClient()),
-          eventReceiverProvider
-              .overrideWithValue(MockEventReceiver()),
+          eventReceiverProvider.overrideWithValue(MockEventReceiver()),
         ],
         child: const App(),
       ),
     );
     await tester.pumpAndSettle();
 
-    final materialApp =
-        tester.widget<MaterialApp>(find.byType(MaterialApp));
+    final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(materialApp.theme?.useMaterial3, isTrue);
     expect(materialApp.darkTheme, isNotNull);
     expect(materialApp.themeMode, ThemeMode.system);

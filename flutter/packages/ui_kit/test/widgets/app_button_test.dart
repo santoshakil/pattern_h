@@ -69,7 +69,9 @@ void main() {
       await t.pumpWidget(
         MaterialApp(
           theme: theme,
-          home: Scaffold(body: AppButton(label: 'X', onPressed: () {})),
+          home: Scaffold(
+            body: AppButton(label: 'X', onPressed: () {}),
+          ),
         ),
       );
       final btn = t.widget<ElevatedButton>(find.byType(ElevatedButton));
