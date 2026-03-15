@@ -79,6 +79,6 @@ void main() {
     final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(materialApp.theme?.useMaterial3, isTrue);
     expect(materialApp.darkTheme, isNotNull);
-    expect(materialApp.themeMode, ThemeMode.system);
+    expect(materialApp.themeMode, ThemeMode.dark);
   });
 }
