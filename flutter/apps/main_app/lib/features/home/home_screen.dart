@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:developer' as dev;
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:native_bridge/native_bridge.dart';
+import '../../platform/device_info.dart';
 import 'package:proto_models/proto_models.dart';
 
 import 'home_provider.dart';
@@ -33,31 +33,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  void _runTests() {
-    _addLog('=== FFI Test Start ===');
+  Future<void> _runTests() async {
+    _addLog('=== FFI Tests ===');
+    _testFfiInit();
+    _testPing();
+    _testEvent();
+    _addLog('');
+    _addLog('=== Method Channel Tests ===');
+    await _testMethodChannel();
+    _addLog('');
+    _addLog('=== All Tests Complete ===');
+  }
 
+  void _testFfiInit() {
     try {
       final ffi = ref.read(ffiClientProvider);
-      _addLog('PASS: FFI init OK');
-      _addLog('Version: ${ffi.version}');
+      _addLog('PASS: FFI init OK (v${ffi.version})');
     } catch (e) {
       _addLog('FAIL: FFI init - $e');
-      return;
     }
+  }
 
+  void _testPing() {
     try {
       final ffi = ref.read(ffiClientProvider);
       final req = PingRequest(message: 'hello from Flutter');
       final resBytes = ffi.ping(Uint8List.fromList(req.writeToBuffer()));
       final res = PingResponse.fromBuffer(resBytes);
       _addLog('PASS: Ping - ${res.message}');
-      if (res.hasTimestamp()) {
-        _addLog('  Timestamp: ${res.timestamp.seconds}');
-      }
     } catch (e) {
       _addLog('FAIL: Ping - $e');
     }
+  }
 
+  void _testEvent() {
     try {
       final receiver = ref.read(eventReceiverProvider);
       _eventSub = receiver.events.listen((event) {
@@ -68,8 +77,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     } catch (e) {
       _addLog('FAIL: Event - $e');
     }
+  }
 
-    _addLog('=== FFI Test End ===');
+  Future<void> _testMethodChannel() async {
+    try {
+      final info = await DeviceInfo.get();
+      if (info.isEmpty) {
+        _addLog('FAIL: Method channel - empty response');
+        return;
+      }
+      _addLog('PASS: Method channel - getDeviceInfo');
+      for (final entry in info.entries) {
+        _addLog('  ${entry.key}: ${entry.value}');
+      }
+    } catch (e) {
+      _addLog('FAIL: Method channel - $e');
+    }
   }
 
   void _addLog(String msg) {
@@ -90,7 +113,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Flutter + Rust FFI Test',
+              'Flutter + Rust + Platform Test',
               style: text.titleLarge?.copyWith(color: colors.primary),
             ),
             const SizedBox(height: 16),
@@ -106,8 +129,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           : colors.onSurface;
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Text(line,
-                        style: text.bodyMedium?.copyWith(color: color)),
+                    child: Text(
+                      line,
+                      style: text.bodyMedium?.copyWith(color: color),
+                    ),
                   );
                 },
               ),

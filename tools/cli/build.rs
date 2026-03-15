@@ -45,6 +45,7 @@ fn main() {
     println!("cargo:rerun-if-changed=../../flutter");
     println!("cargo:rerun-if-changed=../../scripts");
     println!("cargo:rerun-if-changed=../../docs/architecture");
+    println!("cargo:rerun-if-changed=../../templates");
 }
 
 fn walk_dir(root: &Path, dir: &Path, entries: &mut Vec<(String, PathBuf, bool)>) {
@@ -81,7 +82,8 @@ fn should_skip(rel: &str) -> bool {
 
     for p in &parts {
         match *p {
-            ".git" | "target" | ".dart_tool" | "build" | "generated" | "tools" | ".github" => {
+            ".git" | "target" | ".dart_tool" | "build" | "generated" | "tools" | ".github"
+            | "examples" => {
                 return true
             }
             _ => {}
@@ -90,6 +92,22 @@ fn should_skip(rel: &str) -> bool {
 
     if rel.starts_with("docs/analysis") {
         return true;
+    }
+
+    // Skip platform directories in apps (generated per-project by flutter create)
+    if rel.starts_with("flutter/apps/") {
+        let platform_dirs = ["android", "ios", "macos", "windows", "linux"];
+        for plat in &platform_dirs {
+            if parts.contains(plat) {
+                return true;
+            }
+        }
+        if rel.ends_with("/README.md")
+            || rel.ends_with("/analysis_options.yaml")
+            || rel.ends_with(".iml")
+        {
+            return true;
+        }
     }
 
     if rel.ends_with(".lock") {
