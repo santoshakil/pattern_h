@@ -47,9 +47,8 @@ just setup — first-time setup (checks tools, installs deps, generates code)
 just check — full pipeline: fmt + lint + test
 just fmt — format Rust + Dart
 just lint — clippy + dart analyze
-just test — cargo test + flutter test
+just test — cargo test + flutter test (no melos required)
 just generate — regenerate proto + cbindgen header
-just scaffold <name> [--org] [--seed-color] [-o] — create new project
 just install-cli — install pattern-h command globally
 just clean — clean all build artifacts
 

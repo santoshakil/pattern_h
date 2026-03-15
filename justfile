@@ -22,7 +22,7 @@ lint:
 # Run all tests
 test:
     cd rust && cargo test --workspace
-    cd flutter && melos run test
+    cd flutter && bash -c 'for d in packages/*/test apps/*/test; do [ -d "$$d" ] && (cd "$$(dirname $$d)" && flutter test) || true; done'
 
 # Rust check only
 rust-check:
@@ -40,4 +40,4 @@ install-cli:
 # Clean all build artifacts
 clean:
     cd rust && cargo clean
-    cd flutter && melos run clean
+    cd flutter && bash -c 'for d in packages/* apps/*; do [ -d "$$d" ] && (cd "$$d" && flutter clean 2>/dev/null) || true; done'

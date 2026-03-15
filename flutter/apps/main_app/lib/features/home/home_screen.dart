@@ -121,9 +121,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 itemBuilder: (_, i) {
                   final line = _log[i];
                   final color = line.startsWith('PASS')
-                      ? Colors.green
+                      ? colors.primary
                       : line.startsWith('FAIL')
-                          ? Colors.red
+                          ? colors.error
                           : colors.onSurface;
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),

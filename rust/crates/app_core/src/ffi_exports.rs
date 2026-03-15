@@ -1,3 +1,4 @@
+use crate::RUNTIME;
 use domain::services::ping::{DefaultPingService, PingService};
 use ffi::{FfiResult, catch_ffi, validate_ptr};
 use prost::Message;
@@ -9,6 +10,7 @@ static PING_SERVICE: DefaultPingService = DefaultPingService;
 #[unsafe(no_mangle)]
 pub extern "C" fn app_ping(data: *const u8, len: usize) -> FfiResult {
     catch_ffi(|| {
+        RUNTIME.ensure_init()?;
         let bytes = unsafe { validate_ptr(data, len)? };
         let req = proto::services::PingRequest::decode(bytes)
             .map_err(|e| errors::FfiError::Decode(e.to_string()))?;

@@ -40,6 +40,15 @@ pub extern "C" fn app_init() -> ffi::FfiResult {
             }
         }
         RUNTIME.init()?;
+
+        let db = sqlite::Database::in_memory()
+            .map_err(|e| errors::FfiError::RuntimeInit(e.to_string()))?;
+        db.with_connection(|conn| {
+            sqlite::run_migrations(conn, &[])
+        })
+        .map_err(|e| errors::FfiError::RuntimeInit(e.to_string()))?;
+        tracing::info!("database ready (0 migrations)");
+
         tracing::info!("app initialized");
         Ok(Vec::new())
     })
