@@ -33,14 +33,6 @@ generate:
     ./scripts/generate_proto.sh
     cd rust && cargo build -p app_core
 
-# Create a new project from this skeleton
-scaffold *args:
-    cargo run --manifest-path tools/cli/Cargo.toml -- {{args}}
-
-# Install the scaffold CLI globally
-install-cli:
-    cargo install --path tools/cli
-
 # Clean all build artifacts
 clean:
     cd rust && cargo clean
