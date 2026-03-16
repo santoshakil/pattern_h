@@ -23,8 +23,13 @@
 - flutter/packages/platform_bridge — typed method channel toolkit (PlatformChannel + error hierarchy)
 - flutter/packages/proto_models — generated Dart protobuf classes
 - flutter/packages/design_system — Material 3 theme, colors, typography (seed color based)
-- flutter/packages/ui_kit — reusable themed widgets (AppButton, AppScaffold)
+- flutter/packages/ui_kit — atomic design widgets (atoms/molecules/organisms)
+- flutter/packages/navigation — GoRouter config, route definitions, guards
+- flutter/packages/utils — formatters, validators, extensions
 - flutter/apps/main_app — the Flutter application
+  - lib/core/platform/ — typed platform channel wrappers
+  - lib/features/{name}/presentation/ — screens, widgets
+  - lib/features/{name}/providers/ — Riverpod state management
 - templates/platform/ — platform channel templates for Android/iOS/macOS/Windows/Linux
 - tools/cli/ — Rust CLI to create new projects (embeds template at compile time)
 
@@ -37,8 +42,10 @@ Rust:
   proto → prost (generated types)
   NEVER: domain → infrastructure
 Flutter:
-  main_app → design_system, ui_kit, native_bridge, platform_bridge, proto_models
-  ui_kit → flutter SDK only (uses Theme.of(context), NO design_system dep)
+  main_app → design_system, ui_kit, native_bridge, platform_bridge, proto_models, navigation, utils
+  navigation → flutter_riverpod, go_router (router config, guards)
+  utils → flutter SDK only (formatters, validators, extensions)
+  ui_kit → flutter SDK only (atoms/molecules/organisms, uses Theme.of(context))
   native_bridge → ffi, hooks, code_assets, native_toolchain_rust
   platform_bridge → flutter SDK only
 

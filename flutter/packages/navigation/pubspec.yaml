@@ -1,0 +1,20 @@
+name: navigation
+description: Router configuration, route definitions, and navigation guards
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.0
+  flutter: ">=3.32.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.3.0
+  go_router: ^17.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

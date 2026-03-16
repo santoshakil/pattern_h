@@ -10,6 +10,8 @@ workspace:
   - packages/proto_models
   - packages/design_system
   - packages/ui_kit
+  - packages/navigation
+  - packages/utils
   - apps/main_app
 
 dev_dependencies:

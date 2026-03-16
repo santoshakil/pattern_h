@@ -3,10 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:native_bridge/native_bridge.dart';
-import '../../platform/device_info.dart';
+import '../../../core/platform/device_info.dart';
 import 'package:proto_models/proto_models.dart';
 
-import 'home_provider.dart';
+import '../providers/home_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

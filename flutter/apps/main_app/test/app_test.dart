@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:main_app/app.dart';
-import 'package:main_app/features/home/home_provider.dart';
+import 'package:main_app/features/home/providers/home_provider.dart';
 import 'package:native_bridge/native_bridge.dart';
 
 class MockFfiClient implements FfiClient {

@@ -364,8 +364,8 @@ fn inject_platform_channels(_config: &Config, app_dir: &Path) {
         );
     }
 
-    // Dart platform wrapper
-    let platform_dir = app_dir.join("lib/platform");
+    // Dart platform wrapper (into core/platform/)
+    let platform_dir = app_dir.join("lib/core/platform");
     let _ = fs::create_dir_all(&platform_dir);
     copy_tpl(
         &tpl.join("dart/device_info.dart"),
